@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">Froala v4 Editor</title>
+	<description xml:lang="ko">Froala v4 Editor</description>
+	<version>1.0.0</version>
+	<date>2022-11-08</date>
+    <author email_address="matthew218@naver.com" link="https://shop.hoto.dev">
+		<name xml:lang="ko">Waterticket</name>
+	</author>
+	<author link="https://froala.com">
+		<name xml:lang="ko">Froala</name>
+	</author>
+	<colorset>
+		<color name="auto">
+			<title xml:lang="ko">auto</title>
+		</color>
+	</colorset>
+</skin>

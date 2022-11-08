@@ -1,0 +1,252 @@
+
+
+<load target="../../tpl/js/editor_common.js" />
+<load target="../../../../common/xeicon/xeicon.min.css" />
+
+<load target="css/froala_editor.pkgd.min.css" />
+<load target="css/third_party/image_tui.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tui-image-editor@3.2.2/dist/tui-image-editor.css">
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.css">
+
+<script type="text/javascript" src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<load target="js/froala_editor.pkgd.min.js" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/mode/xml/xml.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.7/fabric.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tui-code-snippet@1.4.0/dist/tui-code-snippet.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tui-image-editor@3.2.2/dist/tui-image-editor.min.js"></script>
+<load target="js/third_party/image_tui.min.js" />
+<load target="js/plugins/file.min.js" />
+<load target="froala_key.js" />
+
+
+<style>
+.ProseMirror.toastui-editor-contents p{
+	line-height: '{$content_line_height}';
+	font-size: '{$content_font_size}';
+}
+</style>
+<!--@if($content_font)-->
+<style>
+.ProseMirror.toastui-editor-contents p{
+	font-family: '{$content_font}';
+}
+</style>
+<!--@endif-->
+
+<div id="froala_{$editor_sequence}">
+	<div id="froala_editor_{$editor_sequence}" class="forala {$colorset}"
+        data-editor-sequence="{$editor_sequence}"
+        data-editor-primary-key-name="{$editor_primary_key_name}"
+        data-editor-content-key-name="{$editor_content_key_name}"
+        data-editor-height="{$editor_height}">
+	</div>
+	<!--@if($allow_fileupload)-->
+		<include target="../ckeditor/file_upload.html" />
+	<!--@endif-->
+</div>
+<script>
+	var rx_colorset = '{$colorset}';
+	if(rx_colorset == 'auto')
+	{
+		if($("body").hasClass("color_scheme_dark"))
+		{
+			rx_colorset = 'dark';
+		}
+		else
+		{
+			rx_colorset = 'light';
+		}
+	}
+
+	if(editor == undefined) var editor = [];
+    if(editor_selector == undefined) var editor_selector = [];
+
+    editor_selector['{$editor_sequence}'] = $('div#froala_editor_{$editor_sequence}');
+	
+	var content_key = editor_selector['{$editor_sequence}'].data('editor-content-key-name');
+	var insert_form = editor_selector['{$editor_sequence}'].closest('form');
+    var content_input = insert_form.find('input,textarea').filter('[name=' + content_key + ']');
+
+	editor_selector['{$editor_sequence}'].focusout(function() {
+        var editor_value = editor_selector['{$editor_sequence}'].find('.fr-element').html();
+        $('[name=' + content_key + ']').val(editor_value);
+    });
+
+	editor_selector['{$editor_sequence}'].html(content_input.val());
+	
+	new FroalaEditor('div#froala_editor_{$editor_sequence}',  {
+		key: froala_editor_key,
+        height: '{$editor_height}px',
+		placeholderText: '내용을 입력해주세요',
+		imageUploadURL: "/",
+		imageUploadParam: 'Filedata',
+		imageUploadParams: {
+			mid: '{Context::get("mid")}',
+			act: 'procFroalaFileUpload',
+			editor_sequence: '{$editor_sequence}',
+		},
+		imageUploadMethod: 'POST',
+		fileUploadURL: "/",
+		fileUploadParam: 'Filedata',
+		fileUploadParams: {
+			mid: '{Context::get("mid")}',
+			act: 'procFroalaFileUpload',
+			editor_sequence: '{$editor_sequence}',
+		},
+		fileUploadMethod: 'POST',
+		attribution: false,
+    	events: {
+			'image.uploaded': function (response) {
+				reloadUploader('{$editor_sequence}');
+			},
+			'image.error': function (error, response) {
+				console.log(error);
+				console.log(response);
+
+				if (error.code == 5) {
+					alert('이미지 용량이 너무 큽니다.');
+				}
+			},
+			'file.uploaded': function (response) {
+				reloadUploader('{$editor_sequence}');
+			},
+			'file.error': function (error, response) {
+				console.log(error);
+				console.log(response);
+
+				// File too text-large.
+				if (error.code == 5) {
+					alert('파일 용량이 너무 큽니다.');
+				}
+			}
+		},
+		"toolbarButtons": {
+			"moreText": {
+				"buttons": [
+					"bold",
+					"italic",
+					"underline",
+					"strikeThrough",
+					"subscript",
+					"superscript",
+					"fontFamily",
+					"fontSize",
+					"textColor",
+					"backgroundColor",
+					"inlineClass",
+					"inlineStyle",
+					"clearFormatting"
+				],
+				"buttonsVisible": 3,
+				"align": "left"
+			},
+			"moreParagraph": {
+				"buttons": [
+					"alignLeft",
+					"alignCenter",
+					"formatOLSimple",
+					"alignRight",
+					"alignJustify",
+					"paragraphFormat",
+					"paragraphStyle",
+					"lineHeight",
+					"outdent",
+					"indent",
+					"quote"
+				],
+				"buttonsVisible": 3,
+				"align": "left"
+			},
+			"moreRich": {
+				"buttons": [
+					"insertLink",
+					"insertImage",
+					"insertVideo",
+					"insertTable",
+					"emoticons",
+					"specialCharacters",
+					"insertFile",
+					"insertHR"
+				],
+				"buttonsVisible": 2,
+				"align": "left"
+			},
+			"moreMisc": {
+				"buttons": [
+					"undo",
+					"redo",
+					"fullscreen",
+					"print",
+					"getPDF",
+					"selectAll",
+					"html",
+					"help"
+				],
+				"buttonsVisible": 2,
+				"align": "right"
+			},
+			"showMoreButtons": true
+		}
+	});
+	
+	// Save the cursor position.
+	var ranges = [];
+	var saveSelection = function() {
+		var sel = window.getSelection();
+		ranges = [];
+		if (sel.getRangeAt && sel.rangeCount) {
+			for (let i = 0; i < sel.rangeCount; i++) {
+				ranges.push(sel.getRangeAt(i));
+			}
+		}
+	};
+
+	editor_selector['{$editor_sequence}'].bind('mouseup keyup', function() {
+		saveSelection();
+	});
+
+	(function(){
+		saveSelection();
+	})
+
+	// Insert content at cursor position.
+	var insertContent = function(instance, content) {
+		if (content.match(/<(audio|video)\b[^>]+>(<\/p>)?/)) {
+			content = content + '<p><br></p>';
+		}
+
+		if (ranges.length) {
+			var range = ranges[0];
+			range.collapse(false);
+			ranges = [];
+		} else {
+			var range = document.createRange();
+			range.selectNodeContents(instance.get(0));
+			range.collapse(false);
+		}
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+		sel.addRange(range);
+		
+        range.insertNode(range.createContextualFragment(content));
+		range.collapse(false);
+	};
+
+	// Simulate CKEditor for file upload integration.
+	window._getCkeInstance = function(editor_sequence) {
+		var instance = editor[editor_sequence];
+		return {
+			getData: function() {
+				return String(instance.getHTML());
+			},
+			setData: function(content) {
+				instance.setHTML(content);
+			},
+			insertHtml: function(content) {
+				insertContent(instance, content);
+			}
+		};
+	};
+</script>

@@ -1,0 +1,1 @@
+var froala_editor_key = "Insert_Your_Key";
