@@ -1,6 +1,8 @@
 
 
 <load target="../../tpl/js/editor_common.js" />
+<load target="../../tpl/js/editor.app.js" />
+<load target="../ckeditor/js/xe_interface.js" />
 <load target="../../../../common/xeicon/xeicon.min.css" />
 
 <load target="css/froala_editor.pkgd.min.css" />
@@ -35,13 +37,23 @@
 </style>
 <!--@endif-->
 
+<!--@if($enable_autosave)-->
+<input type="hidden" name="_saved_doc_title" value="{(isset($saved_doc) && $saved_doc) ? escape($saved_doc->title) : ''}" />
+<input type="hidden" name="_saved_doc_content" value="{(isset($saved_doc) && $saved_doc) ? escape($saved_doc->content) : ''}" />
+<input type="hidden" name="_saved_doc_document_srl" value="{(isset($saved_doc) && $saved_doc) ? $saved_doc->document_srl : ''}" />
+<input type="hidden" name="_saved_doc_message" value="{$lang->msg_load_saved_doc}" />
+<!--@end-->
+
 <div id="froala_{$editor_sequence}">
-	<div id="froala_editor_{$editor_sequence}" class="forala {$colorset}"
+	<div id="ckeditor_instance_{$editor_sequence}" class="froala {$colorset}"
         data-editor-sequence="{$editor_sequence}"
         data-editor-primary-key-name="{$editor_primary_key_name}"
         data-editor-content-key-name="{$editor_content_key_name}"
         data-editor-height="{$editor_height}">
 	</div>
+
+	<p cond="$enable_autosave" class="editor_autosaved_message autosave_message" id="editor_autosaved_message_{$editor_sequence}">&nbsp;</p>
+
 	<!--@if($allow_fileupload)-->
 		<include target="../ckeditor/file_upload.html" />
 	<!--@endif-->
@@ -63,7 +75,7 @@
 	if(editor == undefined) var editor = [];
     if(editor_selector == undefined) var editor_selector = [];
 
-    editor_selector['{$editor_sequence}'] = $('div#froala_editor_{$editor_sequence}');
+    editor_selector['{$editor_sequence}'] = $('div#ckeditor_instance_{$editor_sequence}');
 	
 	var content_key = editor_selector['{$editor_sequence}'].data('editor-content-key-name');
 	var insert_form = editor_selector['{$editor_sequence}'].closest('form');
@@ -72,11 +84,22 @@
 	editor_selector['{$editor_sequence}'].focusout(function() {
         var editor_value = editor_selector['{$editor_sequence}'].find('.fr-element').html();
         $('[name=' + content_key + ']').val(editor_value);
+
+		// document_srl change
+		var upload_target_srl = editor_selector['{$editor_sequence}'].find('.fr-element').find('img').first().attr('upload-target-srl');
+		console.log(upload_target_srl);
+		if(upload_target_srl)
+		{
+			//get nearest form
+			var editor_nearest_form = editor_selector['{$editor_sequence}'].closest('form');
+			editor_nearest_form.find('input[name=document_srl]').val(upload_target_srl);
+			editor_nearest_form.find('input[name=comment_srl]').val(upload_target_srl);
+		}
     });
 
 	editor_selector['{$editor_sequence}'].html(content_input.val());
 	
-	new FroalaEditor('div#froala_editor_{$editor_sequence}',  {
+	new FroalaEditor('div#ckeditor_instance_{$editor_sequence}',  {
 		key: froala_editor_key,
         height: '{$editor_height}px',
 		placeholderText: '내용을 입력해주세요',
