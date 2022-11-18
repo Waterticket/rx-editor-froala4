@@ -98,7 +98,7 @@
     });
 
 	editor_selector['{$editor_sequence}'].html(content_input.val());
-	
+
 	new FroalaEditor('div#ckeditor_instance_{$editor_sequence}',  {
 		key: froala_editor_key,
         height: '{$editor_height}px',
@@ -108,6 +108,7 @@
 		imageUploadParams: {
 			mid: '{Context::get("mid")}',
 			act: 'procFroalaFileUpload',
+			module_srl: '{Context::get("module_srl")}',
 			editor_sequence: '{$editor_sequence}',
 		},
 		imageUploadMethod: 'POST',
@@ -116,6 +117,7 @@
 		fileUploadParams: {
 			mid: '{Context::get("mid")}',
 			act: 'procFroalaFileUpload',
+			module_srl: '{Context::get("module_srl")}',
 			editor_sequence: '{$editor_sequence}',
 		},
 		fileUploadMethod: 'POST',
