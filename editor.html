@@ -81,7 +81,7 @@
 	var insert_form = editor_selector['{$editor_sequence}'].closest('form');
     var content_input = insert_form.find('input,textarea').filter('[name=' + content_key + ']');
 
-	editor_selector['{$editor_sequence}'].focusout(function() {
+	editor_selector['{$editor_sequence}'].bind('DOMNodeInserted DOMNodeRemoved', function() {
         var editor_value = editor_selector['{$editor_sequence}'].find('.fr-element').html();
         $('[name=' + content_key + ']').val(editor_value);
 
