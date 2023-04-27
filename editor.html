@@ -22,6 +22,10 @@
 <load target="js/plugins/file.min.js" />
 <load target="froala_key.js" />
 
+{@
+$default_font_size_number = preg_replace('/[^0-9]/', '', $content_font_size);
+$default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
+}
 
 <style>
 .ProseMirror.toastui-editor-contents p{
@@ -87,7 +91,6 @@
 
 		// document_srl change
 		var upload_target_srl = editor_selector['{$editor_sequence}'].find('.fr-element').find('img').first().attr('upload-target-srl');
-		console.log(upload_target_srl);
 		if(upload_target_srl)
 		{
 			//get nearest form
@@ -103,6 +106,10 @@
 		key: froala_editor_key,
         height: '{$editor_height}px',
 		placeholderText: '내용을 입력해주세요',
+		fontSizeSelection: true,
+		fontSize: ['8', '10', '12', '14', '18', '30', '60', '96'],
+		fontSizeDefaultSelection: '{$default_font_size_number}',
+		fontSizeUnit: '{$default_font_size_unit}',
 		imageUploadURL: "/",
 		imageUploadParam: 'Filedata',
 		imageUploadParams: {
