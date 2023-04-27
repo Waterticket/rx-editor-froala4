@@ -136,6 +136,10 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 		fileUploadMethod: 'POST',
 		attribution: false,
     	events: {
+			initialized: function() {
+				this.events.focus();
+				this.fontSize.apply('{$content_font_size}');
+			},
 			'image.uploaded': function (response) {
 				reloadUploader('{$editor_sequence}');
 			},
