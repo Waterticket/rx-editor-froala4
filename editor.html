@@ -102,7 +102,7 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 
 	editor_selector['{$editor_sequence}'].html(content_input.val());
 	var default_font_size = '{$default_font_size_number}';
-	var font_sizes = ['8', '10', '12', '14', '16', '18', '20', '24', '28', '32', '36', '40', '48'];
+	var font_sizes = ['10', '12', '14', '16', '18', '20', '24', '28', '32', '36', '40', '48'];
 	if ($.inArray(default_font_size, font_sizes) < 0) {
 		font_sizes.push(default_font_size);
 		font_sizes.sort();
