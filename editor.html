@@ -1,5 +1,3 @@
-
-
 <load target="../../tpl/js/editor_common.js" />
 <load target="../../tpl/js/editor.app.js" />
 <load target="../ckeditor/js/xe_interface.js" />
@@ -28,15 +26,15 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 }
 
 <style>
-.ProseMirror.toastui-editor-contents p{
-	line-height: '{$content_line_height}';
-	font-size: '{$content_font_size}';
+.fr-element p{
+	line-height: {$content_line_height} !important;
+	font-size: {$content_font_size} !important;
 }
 </style>
 <!--@if($content_font)-->
 <style>
-.ProseMirror.toastui-editor-contents p{
-	font-family: '{$content_font}';
+.fr-element p{
+	font-family: '{$content_font}' !important;
 }
 </style>
 <!--@endif-->
@@ -80,7 +78,7 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
     if(editor_selector == undefined) var editor_selector = [];
 
     editor_selector['{$editor_sequence}'] = $('div#ckeditor_instance_{$editor_sequence}');
-	
+
 	var content_key = editor_selector['{$editor_sequence}'].data('editor-content-key-name');
 	var insert_form = editor_selector['{$editor_sequence}'].closest('form');
     var content_input = insert_form.find('input,textarea').filter('[name=' + content_key + ']');
@@ -116,7 +114,7 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 		placeholderText: '내용을 입력해주세요',
 		fontSizeSelection: true,
 		fontSize: font_sizes,
-		fontSizeDefaultSelection: '{$default_font_size_number}',
+		// fontSizeDefaultSelection: '{$default_font_size_number}',
 		fontSizeUnit: '{$default_font_size_unit}',
 		imageUploadURL: "/",
 		imageUploadParam: 'Filedata',
@@ -238,7 +236,7 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 			"showMoreButtons": true
 		}
 	});
-	
+
 	// Save the cursor position.
 	var ranges = [];
 	var saveSelection = function() {
@@ -277,7 +275,7 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 		var sel = window.getSelection();
 		sel.removeAllRanges();
 		sel.addRange(range);
-		
+
         range.insertNode(range.createContextualFragment(content));
 		range.collapse(false);
 	};
