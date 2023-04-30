@@ -124,6 +124,7 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 			act: 'procFroalaFileUpload',
 			module_srl: '{Context::get("module_srl")}',
 			editor_sequence: '{$editor_sequence}',
+			target: 'image',
 		},
 		imageUploadMethod: 'POST',
 		fileUploadURL: "/",
@@ -133,6 +134,7 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 			act: 'procFroalaFileUpload',
 			module_srl: '{Context::get("module_srl")}',
 			editor_sequence: '{$editor_sequence}',
+			target: 'file',
 		},
 		fileUploadMethod: 'POST',
 		attribution: false,
@@ -282,6 +284,43 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 		range.collapse(false);
 	};
 
+	function addFrFileClassHavingFileSrl(str) {
+		// 문자열로 제공되는 HTML 코드를 포함한 div 요소 생성
+		const div = document.createElement('div');
+		div.innerHTML = str;
+
+		// data-file-srl attribute를 가진 모든 a 태그 요소 선택
+		const aTags = div.querySelectorAll('a[data-file-srl]');
+
+		// 각각의 a 태그 요소에 대해 class attribute에 "fr-file" 추가
+		aTags.forEach(aTag => {
+			aTag.classList.add('fr-file');
+		});
+
+		// 결과적으로, 수정된 HTML 코드를 문자열로 다시 추출
+		const updatedTestCase = div.innerHTML;
+		return updatedTestCase;
+	}
+
+	function addImageClassHavingFileSrl(str)
+	{
+		// 문자열로 제공되는 HTML 코드를 포함한 div 요소 생성
+		const div = document.createElement('div');
+		div.innerHTML = str;
+
+		// data-file-srl attribute를 가진 모든 img 태그 요소 선택
+		const imgTags = div.querySelectorAll('img[data-file-srl]');
+
+		// 각각의 img 태그 요소에 대해 class attribute에 "fr-fic fr-dib fr-draggable" 추가
+		imgTags.forEach(imgTag => {
+			imgTag.classList.add('fr-fic', 'fr-dib', 'fr-draggable');
+		});
+
+		// 결과적으로, 수정된 HTML 코드를 문자열로 다시 추출
+		const updatedHtml = div.innerHTML;
+		return updatedHtml;
+	}
+
 	// Simulate CKEditor for file upload integration.
 	window._getCkeInstance = function(editor_sequence) {
 		var instance = editor[editor_sequence];
@@ -293,6 +332,8 @@ $default_font_size_unit = preg_replace('/[0-9]+/', '', $content_font_size);
 				instance.setHTML(content);
 			},
 			insertHtml: function(content) {
+				content = addFrFileClassHavingFileSrl(content);
+				content = addImageClassHavingFileSrl(content);
 				insertContent(instance, content);
 			}
 		};
